@@ -102,5 +102,24 @@ describe('InvoiceBuild contract', function() {
 
       expect(balance).to.equal(849.5)
     })
+
+    it('Increases the contract balance', async function () {
+      const value = ethers.utils.parseUnits('150.5', 'ether').toHexString()
+      await invoiceBuild.connect(signer2).payInvoice(1, { value })
+
+      let contractBalance = await ethers.provider.getBalance(invoiceBuild.address)
+      contractBalance = parseFloat(ethers.utils.formatUnits(contractBalance, 'ether'))
+
+      expect(contractBalance).to.equal(150.5)
+    })
+
+    it('Prevents overpayment', async function () {
+      try {
+        const value = ethers.utils.parseUnits('1001', 'ether').toHexString()
+        await invoiceBuild.connect(signer2).payInvoice(1, { value })
+      } catch (error) {
+        expect(error.message).to.include('Amount greater than remaining balance')
+      }
+    })
   })
 })
