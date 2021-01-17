@@ -51,10 +51,34 @@ describe('InvoiceBuild payment', function() {
     }
   })
 
-  it('Marked as paid if full amount sent', async function () {})
+  it('Marked as paid if full amount sent', async function () {
+    const value = ethers.utils.parseUnits('1000', 'ether').toHexString()
+    await invoiceBuild.connect(signer2).makePayment(1, { value })
+
+    expect(await invoiceBuild.isPaid(1)).to.be.true
+  })
 
   describe('Overdue', function () {
-    it('Is not marked as paid if full amount sent', async function () {})
+    beforeEach(async function () {
+      const dueAt = Math.round((new Date() / 1000)) - 36000 // 10 hours ago
+      const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether')
+
+      let params2 = Object.assign({}, params, { dueAt, overdueInterest })
+      await invoiceBuild.connect(signer1).create(...Object.values(params2))
+    })
+
+    it('Returns true for isOverdue', async function () {
+      const nowTimestamp = Math.round((new Date() / 1000))
+      expect(await invoiceBuild.isOverdue(2, nowTimestamp)).to.be.true
+    })
+
+    it('Is not marked as paid if full amount sent but not fees', async function () {
+      const value = ethers.utils.parseUnits('1000', 'ether').toHexString()
+      await invoiceBuild.connect(signer2).makePayment(2, { value })
+
+      expect(await invoiceBuild.isPaid(2)).to.be.false
+    })
+
     it('Has outstanding if full amount sent', async function () {})
     it('Marked as paid if outstanding + overdue fee sent', async function () {})
   })
