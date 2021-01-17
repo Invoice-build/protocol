@@ -79,6 +79,35 @@ describe('InvoiceBuild minting', function() {
     expect(amount).to.equal(1000.0)
   })
 
+  it('Sets isPaid to false', async function () {
+    expect(await invoiceBuild.isPaid(1)).to.be.false
+  })
+
+  it('Sets dueAt', async function () {
+    const dueAt = +new Date() + 1000
+    let params2 = Object.assign({}, params, { dueAt })
+    await invoiceBuild.connect(signer1).create(...Object.values(params2))
+
+    expect((await invoiceBuild.dueAt(1)).toNumber()).to.equal(0)
+    expect((await invoiceBuild.dueAt(2)).toNumber()).to.equal(dueAt)
+  })
+
+  it('Sets overdueInterest', async function () {
+    expect((await invoiceBuild.overdueInterest(1)).toNumber()).to.equal(0)
+
+    const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether') // 8%
+    let params2 = Object.assign({}, params, { overdueInterest })
+    await invoiceBuild.connect(signer1).create(...Object.values(params2))
+
+    let interest = await invoiceBuild.overdueInterest(2)
+    interest = parseFloat(ethers.utils.formatUnits(interest, 'ether'))
+    expect(interest).to.equal(0.08)
+  })
+
+  it('Sets lateFees', async function () {
+    expect((await invoiceBuild.lateFees(1)).toNumber()).to.equal(0)
+  })
+
   it('Prevents zero amount invoice', async function () {
     try {
       let params2 = Object.assign({}, params, { amount: '0' })
