@@ -120,6 +120,18 @@ contract InvoiceBuild is ERC721, Ownable {
       return _invoices[id].amount;
     }
 
+    function dueAt(uint256 id) public view returns (uint256) {
+      return _invoices[id].dueAt;
+    }
+
+    function overdueInterest(uint256 id) public view returns (uint256) {
+      return _invoices[id].overdueInterest;
+    }
+
+    function lateFees(uint256 id) public view returns (uint256) {
+      return _invoices[id].lateFees;
+    }
+
     function isOverdue(uint256 id, uint256 currentTime) public view returns (bool) {
       if (_invoices[id].dueAt == 0) return false;
 
