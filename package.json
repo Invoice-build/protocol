@@ -20,7 +20,8 @@
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",
     "send": "hardhat send",
-    "blockNumber": "hardhat blockNumber"
+    "blockNumber": "hardhat blockNumber",
+    "coverage": "hardhat coverage --network hardhat"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -41,6 +42,7 @@
     "hardhat-deploy": "^0.7.0-beta.44",
     "hardhat-deploy-ethers": "^0.3.0-beta.7",
     "node-watch": "^0.7.1",
+    "solidity-coverage": "^0.7.14",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
