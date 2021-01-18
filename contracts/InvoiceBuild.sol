@@ -144,7 +144,7 @@ contract InvoiceBuild is ERC721, Ownable {
       if (!isOverdue(id, currentTime)) return 0;
       uint256 secs = currentTime.sub(_invoices[id].dueAt);
   
-      return secs.div(3600).add(1);
+      return secs.div(3600);
     }
 
     function overdueFee(uint256 id, uint256 currentTime) public view returns (uint256) {
