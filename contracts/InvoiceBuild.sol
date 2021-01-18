@@ -78,11 +78,12 @@ contract InvoiceBuild is ERC721, Ownable {
       require(!isPaid(id), "Invoice already paid off");
       require(amount <= outstanding, "Amount greater than remaining balance");
 
-      _invoices[id].outstanding = Math.max(_invoices[id].outstanding.sub(amount), 0);
-
       if (outstanding.sub(amount) == 0) {
+        _invoices[id].outstanding = 0;
         _invoices[id].isPaid = true;
         _invoices[id].lateFees = overdueFee(id, block.timestamp);
+      } else {
+        _invoices[id].outstanding = _invoices[id].outstanding.sub(amount);
       }
 
       _invoices[id].escrow.deposit{ value: msg.value }(_invoices[id].recipient);
