@@ -26,7 +26,7 @@ contract InvoiceBuild is ERC721, Ownable {
       uint256 outstanding; // The outstanding balance to be paid off
       address payable recipient; // Who can withdraw any funds deposited
       uint256 dueAt;
-      uint256 overdueInterest; // In the UK 'statutory interest' is about 8% + BOE base rater (~0.5%)
+      uint256 overdueInterest; // In the UK 'statutory interest' is about 8% + BOE base rate (~0.5%)
       uint256 lateFees; // Finanl balance of late fees paid
       bool isPaid;
       Escrow escrow;
