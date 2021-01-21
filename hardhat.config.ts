@@ -1,12 +1,13 @@
-// import fs from 'fs'
 import 'dotenv/config'
+
 import { HardhatUserConfig } from 'hardhat/types'
+
 import 'hardhat-deploy'
 import 'hardhat-deploy-ethers'
 import 'solidity-coverage'
-import tasks from './tasks'
 
 // Load tasks
+import tasks from './tasks'
 for (const tsk of tasks) { tsk() }
 
 let mnemonic = process.env.MNEMONIC
@@ -17,8 +18,8 @@ if (!mnemonic) {
 }
 
 const config: HardhatUserConfig = {
-  solidity: "0.7.3",
-  defaultNetwork: 'localhost',
+  solidity: '0.7.3',
+  defaultNetwork: 'hardhat',
   networks: {
     localhost: {
       url: "http://localhost:8545"
