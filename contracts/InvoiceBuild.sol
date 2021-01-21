@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/math/Math.sol";
 
+// import "hardhat/console.sol";
+
 contract InvoiceBuild is ERC721, Ownable {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
@@ -18,8 +20,6 @@ contract InvoiceBuild is ERC721, Ownable {
     event InvoicePayment(uint256 id, uint256 amount, address indexed payer);
     event InvoiceWithdrawal(uint256 id, uint256 amount, address indexed recipient);
     event InvoicePaid(uint256 id, uint256 amount, uint256 lateFees, address indexed payer);
-
-    constructor() public ERC721("Invoice", "INV") {}
 
     struct Invoice {
       uint256 amount; // The total amount to be paid
@@ -36,6 +36,8 @@ contract InvoiceBuild is ERC721, Ownable {
     mapping (uint256 => address) internal _invoiceOwner;
     mapping (address => uint256[]) internal _invoicesForOwner;
     mapping (address => uint256) internal _invoiceCountForOwner;
+
+    constructor() public ERC721("Invoice", "INV") {}
 
     function create(
       uint256 amount,

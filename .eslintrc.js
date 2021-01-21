@@ -5,10 +5,9 @@ module.exports = {
     node: true,
     es6: true
   },
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
-  extends: [],
+  extends: [
+    'eslint:recommended'
+  ],
   plugins: [],
   // add your custom rules here
   rules: {
@@ -16,7 +15,6 @@ module.exports = {
     camelcase: 'off',
     curly: 'off',
     'no-console': 'off',
-    'arrow-parens': ['error', 'as-needed'],
-    'import/namespace': ['error', { allowComputed: true }]
+    'arrow-parens': ['error', 'as-needed']
   }
 }

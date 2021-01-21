@@ -1,16 +1,19 @@
 {
-  "name": "hardhat",
-  "version": "1.0.0",
-  "description": "Contracts",
-  "main": "index.js",
-  "license": "MIT",
+  "name": "invoice-build-contracts",
+  "version": "0.0.1",
+  "description": "Invoice build smart contracts",
+  "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
     "dev": "hardhat node --network hardhat --watch --export-all tmp/contracts/manifest.json",
     "console": "hardhat console",
-    "fork": "hardhat node --fork https://mainnet.infura.io/v3/f4b7c65997354c3783277ae1644ebdfd",
+    "fork": "hardhat node --fork https://mainnet.infura.io/v3/<INFURA_TOKEN>",
     "test": "hardhat test --network hardhat",
     "compile": "hardhat compile",
+    "coverage": "hardhat --network hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"./test/**/*.ts\"",
+    "lint": "yarn run lint:sol && yarn run lint:js",
+    "lint:sol": "solhint --config ./.solhint.json --max-warnings 0 \"contracts/**/*.sol\"",
+    "lint:js": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore --ext .js,.ts .",
     "local:deploy": "hardhat --network localhost deploy --export-all tmp/contracts/manifest.json",
     "rinkeby:deploy": "hardhat --network rinkeby deploy --export-all tmp/contracts/manifest.json",
     "goerli:deploy": "hardhat --network goerli deploy --export-all tmp/contracts/manifest.json",
@@ -20,8 +23,7 @@
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",
     "send": "hardhat send",
-    "blockNumber": "hardhat blockNumber",
-    "coverage": "hardhat coverage --network hardhat"
+    "blockNumber": "hardhat blockNumber"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -42,6 +44,7 @@
     "hardhat-deploy": "^0.7.0-beta.44",
     "hardhat-deploy-ethers": "^0.3.0-beta.7",
     "node-watch": "^0.7.1",
+    "solhint": "^3.3.2",
     "solidity-coverage": "^0.7.14",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"

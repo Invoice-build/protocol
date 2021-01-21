@@ -89,12 +89,16 @@ describe('InvoiceBuild payment', function() {
     expect(lateFees).to.equal(0)
   })
 
+  it('Can be partially paid back', async function () {
+    // Test that several payments can be made to pay off the invoice
+  })
+
   describe('Overdue', function () {
     beforeEach(async function () {
       const dueAt = Math.round((new Date() / 1000)) - 36000 // 10 hours ago
       const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether') // 8%
 
-      let params2 = Object.assign({}, params, { dueAt, overdueInterest })
+      const params2 = Object.assign({}, params, { dueAt, overdueInterest })
       await invoiceBuild.connect(signer1).create(...Object.values(params2))
     })
 
@@ -128,6 +132,11 @@ describe('InvoiceBuild payment', function() {
       await invoiceBuild.connect(signer2).makePayment(2, { value })
 
       expect(await invoiceBuild.isPaid(2)).to.be.true
+    })
+
+    it('Has overdue fees within first hour overdue', async function () {
+      // I think this is why we had the .add(1) in hoursOverdue()
+      // So that fees would start getting added immediately after the due date and not an hour after
     })
 
     it('Records lateFees on final payment', async function () {

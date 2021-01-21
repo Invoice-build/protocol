@@ -1,10 +1,10 @@
 const { expect } = require('chai')
 
 describe('InvoiceBuild withdrawal', function() {
-  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, recipient1, recipient2, params
+  let InvoiceBuild, invoiceBuild, signer1, signer2, recipient1, params
 
   beforeEach(async function () {
-    [owner, signer1, signer2, recipient1, recipient2] = await ethers.getSigners()
+    [, signer1, signer2, recipient1] = await ethers.getSigners()
     params = {
       amount: ethers.utils.parseUnits('1000', 'ether'),
       recipient: recipient1.address,

@@ -28,7 +28,7 @@ describe('InvoiceBuild minting', function() {
   })
 
   it('should have unique tokenURIs', async function () {
-    let params2 = Object.assign({}, params, {
+    const params2 = Object.assign({}, params, {
       metaUrl: 'https://invoice.build/2',
       recipient: recipient2.address
     })
@@ -38,7 +38,7 @@ describe('InvoiceBuild minting', function() {
   })
 
   it('Should add id to owners invoice map', async function () {
-    let params2 = Object.assign({}, params, { recipient: recipient2.address })
+    const params2 = Object.assign({}, params, { recipient: recipient2.address })
     await invoiceBuild.connect(signer2).create(...Object.values(params2))
     await invoiceBuild.connect(signer1).create(...Object.values(params))
     const ids = (await invoiceBuild.invoicesForOwner(signer1.address)).map(id => id.toNumber())
@@ -61,7 +61,7 @@ describe('InvoiceBuild minting', function() {
   })
 
   it('Returns oustanding amount for token', async function () {
-    let timestamp = +new Date()
+    const timestamp = +new Date()
     let outstanding = await invoiceBuild.invoiceOutstanding(1, timestamp)
     outstanding = parseFloat(ethers.utils.formatUnits(outstanding, 'ether'))
     expect(outstanding).to.equal(1000.0)
@@ -85,7 +85,7 @@ describe('InvoiceBuild minting', function() {
 
   it('Sets dueAt', async function () {
     const dueAt = +new Date() + 1000
-    let params2 = Object.assign({}, params, { dueAt })
+    const params2 = Object.assign({}, params, { dueAt })
     await invoiceBuild.connect(signer1).create(...Object.values(params2))
 
     expect((await invoiceBuild.dueAt(1)).toNumber()).to.equal(0)
@@ -96,7 +96,7 @@ describe('InvoiceBuild minting', function() {
     expect((await invoiceBuild.overdueInterest(1)).toNumber()).to.equal(0)
 
     const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether') // 8%
-    let params2 = Object.assign({}, params, { overdueInterest })
+    const params2 = Object.assign({}, params, { overdueInterest })
     await invoiceBuild.connect(signer1).create(...Object.values(params2))
 
     let interest = await invoiceBuild.overdueInterest(2)
@@ -110,7 +110,7 @@ describe('InvoiceBuild minting', function() {
 
   it('Prevents zero amount invoice', async function () {
     try {
-      let params2 = Object.assign({}, params, { amount: '0' })
+      const params2 = Object.assign({}, params, { amount: '0' })
       await invoiceBuild.connect(signer1).create(...Object.values(params2))
     } catch (error) {
       expect(error.message).to.include('Amount too low')
@@ -119,7 +119,7 @@ describe('InvoiceBuild minting', function() {
 
   it('Prevents negative amount invoice', async function () {
     try {
-      let params2 = Object.assign({}, params, { amount: '-1000' })
+      const params2 = Object.assign({}, params, { amount: '-1000' })
       await invoiceBuild.connect(signer1).create(...Object.values(params2))
     } catch (error) {
       expect(error.message).to.include('value out-of-bounds')
