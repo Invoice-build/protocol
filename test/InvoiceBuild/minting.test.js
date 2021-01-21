@@ -6,7 +6,7 @@ describe('InvoiceBuild minting', function() {
   beforeEach(async function () {
     [owner, signer1, signer2, recipient1, recipient2] = await ethers.getSigners()
     params = {
-      amount: ethers.utils.parseUnits('1000', 'ether'),
+      amount: ethers.utils.parseUnits('100', 'ether'),
       recipient: recipient1.address,
       dueAt: 0, // 0 = on reciept, equiv to no due date, can't be overdue
       overdueInterest: 0,
@@ -64,7 +64,7 @@ describe('InvoiceBuild minting', function() {
     const timestamp = +new Date()
     let outstanding = await invoiceBuild.invoiceOutstanding(1, timestamp)
     outstanding = parseFloat(ethers.utils.formatUnits(outstanding, 'ether'))
-    expect(outstanding).to.equal(1000.0)
+    expect(outstanding).to.equal(100.0)
   })
 
   it('Returns withdrawable balance for token', async function () {
@@ -76,7 +76,7 @@ describe('InvoiceBuild minting', function() {
   it('Returns amount for token', async function () {
     let amount = await invoiceBuild.invoiceAmount(1)
     amount = parseFloat(ethers.utils.formatUnits(amount, 'ether'))
-    expect(amount).to.equal(1000.0)
+    expect(amount).to.equal(100.0)
   })
 
   it('Sets isPaid to false', async function () {
@@ -119,7 +119,7 @@ describe('InvoiceBuild minting', function() {
 
   it('Prevents negative amount invoice', async function () {
     try {
-      const params2 = Object.assign({}, params, { amount: '-1000' })
+      const params2 = Object.assign({}, params, { amount: '-100' })
       await invoiceBuild.connect(signer1).create(...Object.values(params2))
     } catch (error) {
       expect(error.message).to.include('value out-of-bounds')

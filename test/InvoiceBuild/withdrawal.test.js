@@ -1,12 +1,12 @@
 const { expect } = require('chai')
 
 describe('InvoiceBuild withdrawal', function() {
-  let InvoiceBuild, invoiceBuild, signer1, signer2, recipient1, params
+  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, recipient1, params
 
   beforeEach(async function () {
-    [, signer1, signer2, recipient1] = await ethers.getSigners()
+    [owner, signer1, signer2, recipient1] = await ethers.getSigners()
     params = {
-      amount: ethers.utils.parseUnits('1000', 'ether'),
+      amount: ethers.utils.parseUnits('100', 'ether'),
       recipient: recipient1.address,
       dueAt: 0, // 0 = on reciept, equiv to no due date, can't be overdue
       overdueInterest: 0,
@@ -20,7 +20,7 @@ describe('InvoiceBuild withdrawal', function() {
   })
 
   it('Fails if not owner', async function () {
-    const value = ethers.utils.parseUnits('1000', 'ether').toHexString()
+    const value = ethers.utils.parseUnits('100', 'ether').toHexString()
     await invoiceBuild.connect(signer2).makePayment(1, { value })
 
     try {
@@ -39,7 +39,7 @@ describe('InvoiceBuild withdrawal', function() {
   })
 
   it('Fails if already fully withdrawn', async function () {
-    const value = ethers.utils.parseUnits('1000', 'ether').toHexString()
+    const value = ethers.utils.parseUnits('100', 'ether').toHexString()
     await invoiceBuild.connect(signer2).makePayment(1, { value })
     await invoiceBuild.connect(signer1).withdrawBalance(1)
 
@@ -54,13 +54,13 @@ describe('InvoiceBuild withdrawal', function() {
     let startingBalance = await ethers.provider.getBalance(recipient1.address)
     startingBalance = parseFloat(ethers.utils.formatUnits(startingBalance, 'ether'))
 
-    const value = ethers.utils.parseUnits('500', 'ether').toHexString()
+    const value = ethers.utils.parseUnits('50', 'ether').toHexString()
     await invoiceBuild.connect(signer2).makePayment(1, { value })
     await invoiceBuild.connect(signer1).withdrawBalance(1)
 
     let newBalance = await ethers.provider.getBalance(recipient1.address)
     newBalance = parseFloat(ethers.utils.formatUnits(newBalance, 'ether'))
     
-    expect(newBalance - startingBalance).to.equal(500.0)
+    expect(newBalance - startingBalance).to.equal(50.0)
   })
 })
