@@ -20,22 +20,30 @@ contract InvoiceBuild is ERC721, Ownable {
     event InvoicePayment(uint256 id, uint256 amount, address indexed payer);
     event InvoiceWithdrawal(uint256 id, uint256 amount, address indexed recipient);
     event InvoicePaid(uint256 id, uint256 amount, uint256 lateFees, address indexed payer);
+    event InvoiceAccepted(uint256 id, address acceptedBy);
+    event BaseMintFeeUpdated(uint256 baseMintFee);
+    event MintFeeBpUpdated(uint256 mintFeeBp);
 
     struct Invoice {
       uint256 amount; // The total amount to be paid
       uint256 outstanding; // The outstanding balance to be paid off
       address payable recipient; // Who can withdraw any funds deposited
+      address acceptedBy; // The client
       uint256 dueAt;
-      uint256 overdueInterest; // In the UK 'statutory interest' is about 8% + BOE base rate (~0.5%)
+      uint256 overdueInterest; // e.g. 8.5%, In the UK 'statutory interest' is about 8% + BOE base rate (~0.5%)
       uint256 lateFees; // Finanl balance of late fees paid
       bool isPaid;
       Escrow escrow;
     }
 
+    uint256 internal _baseMintFee = 0.1 ether; // ~ $0.10
+    uint256 internal _mintFeeBp = 1; // 0.01%
+
     mapping (uint256 => Invoice) internal _invoices;
     mapping (uint256 => address) internal _invoiceOwner;
     mapping (address => uint256[]) internal _invoicesForOwner;
     mapping (address => uint256) internal _invoiceCountForOwner;
+    mapping (address => uint256) internal _repForClient;
 
     constructor() public ERC721("Invoice", "INV") {}
 
@@ -45,8 +53,9 @@ contract InvoiceBuild is ERC721, Ownable {
       uint256 dueAt,
       uint256 overdueInterest,
       string memory metaUrl
-    ) public returns (uint256) {
+    ) external payable returns (uint256) {
         require(amount > 0, "Amount too low");
+        require(msg.value >= mintFeeFor(amount), "Fee too low");
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
@@ -60,6 +69,7 @@ contract InvoiceBuild is ERC721, Ownable {
           overdueInterest: overdueInterest,
           lateFees: 0,
           isPaid: false,
+          acceptedBy: address(0),
           escrow: escrow
         });
         _invoiceOwner[newItemId] = msg.sender;
@@ -81,20 +91,39 @@ contract InvoiceBuild is ERC721, Ownable {
       require(amount <= outstanding, "Amount greater than remaining balance");
 
       if (outstanding.sub(amount) == 0) {
-        _invoices[id].outstanding = 0;
-        _invoices[id].isPaid = true;
-        _invoices[id].lateFees = overdueFee(id, block.timestamp);
+        finalize(id);
       } else {
         _invoices[id].outstanding = _invoices[id].outstanding.sub(amount);
       }
 
+      updateReputation(msg.sender, amount);
+
       _invoices[id].escrow.deposit{ value: msg.value }(_invoices[id].recipient);
 
       emit InvoicePayment(id, amount, msg.sender);
-      if (outstanding.sub(amount) == 0) emit InvoicePaid(id, amount, _invoices[id].lateFees, msg.sender);
+      if (outstanding.sub(amount) == 0) {
+        emit InvoicePaid(id, amount, _invoices[id].lateFees, msg.sender);
+      }
     }
 
-    function withdrawBalance(uint256 id) public {
+    function finalize(uint256 id) private {
+      _invoices[id].outstanding = 0;
+      _invoices[id].isPaid = true;
+      _invoices[id].lateFees = overdueFee(id, block.timestamp);
+    }
+
+    function updateReputation(address account, uint256 paymentAmount) private {
+      _repForClient[account] = _repForClient[account].add(paymentAmount.div(100000));
+    }
+
+    function accept(uint256 id) external {
+      require(_invoices[id].acceptedBy == address(0), "Already accepted");
+
+      _invoices[id].acceptedBy = msg.sender;
+      emit InvoiceAccepted(id, msg.sender);
+    }
+
+    function withdrawBalance(uint256 id) external {
       uint256 balance = invoiceBalance(id);
       require(balance > 0, "Nothing to withdraw");
       require(msg.sender == _invoiceOwner[id], "Caller is not the owner");
@@ -102,6 +131,10 @@ contract InvoiceBuild is ERC721, Ownable {
       _invoices[id].escrow.withdraw(_invoices[id].recipient);
 
       emit InvoiceWithdrawal(id, balance, msg.sender);
+    }
+
+    function mintFeeFor(uint256 amount) public view returns (uint256) {
+      return _baseMintFee.add(amount.mul(_mintFeeBp).div(10000));
     }
 
     function invoicesForOwner(address account) public view returns (uint256[] memory) {
@@ -159,4 +192,34 @@ contract InvoiceBuild is ERC721, Ownable {
 
       return hoursOverdue(id, currentTime).mul(feePerHour);
     }
+
+    function acceptedBy(uint256 id) public view returns (address) {
+      return _invoices[id].acceptedBy;
+    }
+
+    function isAccepted(uint256 id) public view returns (bool) {
+      return _invoices[id].acceptedBy != address(0);
+    }
+
+    function reputationFor(address account) public view returns (uint256) {
+      return _repForClient[account];
+    }
+
+    // function baseMintFee() public view returns (uint256) {
+    //   return _baseMintFee;
+    // }
+
+    // function setBaseMintFee(uint256 newBaseFee) external onlyOwner {
+    //   _baseMintFee = newBaseFee;
+    //   emit BaseMintFeeUpdated(newBaseFee);
+    // }
+
+    // function mintFeeBp() public view returns (uint256) {
+    //   return _mintFeeBp;
+    // }
+
+    // function setMintFeeBp(uint256 newFeeBp) external onlyOwner {
+    //   _mintFeeBp = newFeeBp;
+    //   emit MintFeeBpUpdated(newFeeBp);
+    // }
 }

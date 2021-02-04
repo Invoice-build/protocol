@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 
 describe('InvoiceBuild payment', function() {
-  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, signer3, recipient1, params, invoiceId
+  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, signer3, recipient1, params, invoiceId, mintFee
 
   beforeEach(async function () {
     [owner, signer1, signer2, signer3, recipient1] = await ethers.getSigners()
@@ -12,11 +12,12 @@ describe('InvoiceBuild payment', function() {
       overdueInterest: 0,
       metaUrl: 'https://invoice.build'
     }
+    mintFee = ethers.utils.parseUnits('0.2', 'ether')
 
     InvoiceBuild = await ethers.getContractFactory('InvoiceBuild')
     invoiceBuild = await InvoiceBuild.deploy()
 
-    await invoiceBuild.connect(signer1).create(...Object.values(params))
+    await invoiceBuild.connect(signer1).create(...Object.values(params), { value: mintFee })
     invoiceId = 1
   })
 
@@ -40,7 +41,7 @@ describe('InvoiceBuild payment', function() {
     let contractBalance = await ethers.provider.getBalance(invoiceBuild.address)
     contractBalance = parseFloat(ethers.utils.formatUnits(contractBalance, 'ether'))
 
-    expect(contractBalance).to.equal(0)
+    expect(contractBalance).to.equal(0.2)
   })
 
   it('Prevents overpayment', async function () {
@@ -106,7 +107,7 @@ describe('InvoiceBuild payment', function() {
       const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether') // 8%
 
       const params2 = Object.assign({}, params, { dueAt, overdueInterest })
-      await invoiceBuild.connect(signer1).create(...Object.values(params2))
+      await invoiceBuild.connect(signer1).create(...Object.values(params2), { value: mintFee })
       invoiceId = 2
     })
 
@@ -147,7 +148,7 @@ describe('InvoiceBuild payment', function() {
       const overdueInterest = ethers.utils.parseUnits((8 / 100).toString(), 'ether') // 8%
       const newParams = Object.assign({}, params, { dueAt, overdueInterest })
 
-      await invoiceBuild.connect(signer1).create(...Object.values(newParams))
+      await invoiceBuild.connect(signer1).create(...Object.values(newParams), { value: mintFee })
       const invoiceId = 3
 
       const nowTimestamp = Math.round((new Date() / 1000))
@@ -157,7 +158,6 @@ describe('InvoiceBuild payment', function() {
 
       let lateFees = await invoiceBuild.lateFees(invoiceId)
       lateFees = parseFloat(ethers.utils.formatUnits(lateFees, 'ether'))
-      console.log('lateFees', lateFees)
       expect(lateFees).to.not.equal(0)
     })
 

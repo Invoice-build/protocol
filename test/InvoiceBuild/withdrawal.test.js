@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 
 describe('InvoiceBuild withdrawal', function() {
-  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, recipient1, params
+  let InvoiceBuild, invoiceBuild, owner, signer1, signer2, recipient1, params, mintFee, invoiceId
 
   beforeEach(async function () {
     [owner, signer1, signer2, recipient1] = await ethers.getSigners()
@@ -12,19 +12,21 @@ describe('InvoiceBuild withdrawal', function() {
       overdueInterest: 0,
       metaUrl: 'https://invoice.build'
     }
+    mintFee = ethers.utils.parseUnits('0.2', 'ether')
 
     InvoiceBuild = await ethers.getContractFactory('InvoiceBuild')
     invoiceBuild = await InvoiceBuild.deploy()
 
-    await invoiceBuild.connect(signer1).create(...Object.values(params))
+    await invoiceBuild.connect(signer1).create(...Object.values(params), { value: mintFee })
+    invoiceId = 1
   })
 
   it('Fails if not owner', async function () {
     const value = ethers.utils.parseUnits('100', 'ether').toHexString()
-    await invoiceBuild.connect(signer2).makePayment(1, { value })
+    await invoiceBuild.connect(signer2).makePayment(invoiceId, { value })
 
     try {
-      await invoiceBuild.connect(signer2).withdrawBalance(1)
+      await invoiceBuild.connect(signer2).withdrawBalance(invoiceId)
     } catch (error) {
       expect(error.message).to.include('not the owner')
     }
@@ -32,7 +34,7 @@ describe('InvoiceBuild withdrawal', function() {
 
   it('Fails if nothing to withdraw', async function () {
     try {
-      await invoiceBuild.connect(signer1).withdrawBalance(1)
+      await invoiceBuild.connect(signer1).withdrawBalance(invoiceId)
     } catch (error) {
       expect(error.message).to.include('Nothing to withdraw')
     }
@@ -40,11 +42,11 @@ describe('InvoiceBuild withdrawal', function() {
 
   it('Fails if already fully withdrawn', async function () {
     const value = ethers.utils.parseUnits('100', 'ether').toHexString()
-    await invoiceBuild.connect(signer2).makePayment(1, { value })
-    await invoiceBuild.connect(signer1).withdrawBalance(1)
+    await invoiceBuild.connect(signer2).makePayment(invoiceId, { value })
+    await invoiceBuild.connect(signer1).withdrawBalance(invoiceId)
 
     try {
-      await invoiceBuild.connect(signer1).withdrawBalance(1)
+      await invoiceBuild.connect(signer1).withdrawBalance(invoiceId)
     } catch (error) {
       expect(error.message).to.include('Nothing to withdraw')
     }
@@ -55,8 +57,8 @@ describe('InvoiceBuild withdrawal', function() {
     startingBalance = parseFloat(ethers.utils.formatUnits(startingBalance, 'ether'))
 
     const value = ethers.utils.parseUnits('50', 'ether').toHexString()
-    await invoiceBuild.connect(signer2).makePayment(1, { value })
-    await invoiceBuild.connect(signer1).withdrawBalance(1)
+    await invoiceBuild.connect(signer2).makePayment(invoiceId, { value })
+    await invoiceBuild.connect(signer1).withdrawBalance(invoiceId)
 
     let newBalance = await ethers.provider.getBalance(recipient1.address)
     newBalance = parseFloat(ethers.utils.formatUnits(newBalance, 'ether'))
