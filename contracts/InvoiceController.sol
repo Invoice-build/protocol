@@ -2,13 +2,14 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/math/SafeMathUpgradeable.sol";
 import "./interfaces/IInvoiceBuildToken.sol";
 import "./interfaces/IInvoiceNFT.sol";
 import "./interfaces/ILogger.sol";
 import "./InvoiceV1.sol";
 
-contract InvoiceController is OwnableUpgradeable {
+contract InvoiceController is Initializable, OwnableUpgradeable {
   using SafeMathUpgradeable for uint256;
 
   ILogger internal logger;
