@@ -1,10 +1,9 @@
 import 'dotenv/config'
-
-import { HardhatUserConfig } from 'hardhat/types'
-
-import 'hardhat-deploy'
-import 'hardhat-deploy-ethers'
+import '@nomiclabs/hardhat-waffle'
+import '@nomiclabs/hardhat-ethers'
+import '@openzeppelin/hardhat-upgrades'
 import 'solidity-coverage'
+import { HardhatUserConfig } from 'hardhat/types'
 
 // Load tasks
 import tasks from './tasks'
@@ -18,11 +17,18 @@ if (!mnemonic) {
 }
 
 const config: HardhatUserConfig = {
-  solidity: '0.7.3',
+  solidity: {
+    version: '0.7.3',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
   defaultNetwork: 'hardhat',
   networks: {
-    localhost: {
-      url: "http://localhost:8545"
+    hardhat: {
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -47,8 +53,8 @@ const config: HardhatUserConfig = {
     xdai: {
       url: 'https://dai.poa.network',
       chainId: 100,
-      gas: 500000,
-      gasPrice: 1000000000,
+      gas: 5e5,
+      gasPrice: 3e9,
       accounts: { mnemonic }
     }
   }
