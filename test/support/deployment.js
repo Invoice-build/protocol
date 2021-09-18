@@ -3,7 +3,7 @@ module.exports = {
     const [owner] = await ethers.getSigners()
 
     // Deploy logger
-    const Logger = await ethers.getContractFactory('Logger')
+    const Logger = await ethers.getContractFactory('InvoiceLogger')
     const logger = await Logger.deploy()
     await logger.deployed()
     await logger.initialize()
@@ -36,7 +36,7 @@ module.exports = {
 
   deployProxySuite: async function () {
     // Deploy logger
-    const Logger = await ethers.getContractFactory('Logger')
+    const Logger = await ethers.getContractFactory('InvoiceLogger')
     const logger = await upgrades.deployProxy(Logger)
 
     // Deploy IBT token (ERC20)

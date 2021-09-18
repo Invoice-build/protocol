@@ -278,9 +278,9 @@
         }
       }
     },
-    "f58fe26b9e2775cfb394b31c0d7523d3dfea17e1c442fef20da963a68d6c15d4": {
+    "6d51e366460f5317979dfd4919a17e6e6b7bbbeaface15abde17f153956f04c9": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xf386eb55771a863eef1eb4ff1d353ca100b256e283fe8f849361f404e7ebeb35",
+      "txHash": "0x05d787d7317d141e0c4fa3dacafc9eed50f1d55f5483eda0ab42b579ac44a8a7",
       "layout": {
         "storage": [
           {
@@ -314,16 +314,16 @@
             "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
           },
           {
-            "contract": "Logger",
+            "contract": "InvoiceLogger",
             "label": "controller",
             "type": "t_address",
-            "src": "contracts/Logger.sol:8"
+            "src": "contracts/InvoiceLogger.sol:9"
           },
           {
-            "contract": "Logger",
+            "contract": "InvoiceLogger",
             "label": "whitelisted",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/Logger.sol:9"
+            "src": "contracts/InvoiceLogger.sol:10"
           }
         ],
         "types": {
@@ -348,9 +348,127 @@
         }
       }
     },
+    "096b25ad8abfea40466fbb93e5d5c82ca849876d33a7a80082c71e5e1f1744f9": {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "txHash": "0x0d4c3e8c765002f393310b0ffe68a4ab34a7a796c8ef8ef235631e697297a214",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol:25"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol:30"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_balances",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:37"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_allowances",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:39"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_totalSupply",
+            "type": "t_uint256",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:41"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:43"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:44"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "_decimals",
+            "type": "t_uint8",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:45"
+          },
+          {
+            "contract": "ERC20Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)44_storage",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:312"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "InvoiceBuildToken",
+            "label": "controller",
+            "type": "t_address",
+            "src": "contracts/InvoiceBuildToken.sol:9"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          },
+          "t_array(t_uint256)44_storage": {
+            "label": "uint256[44]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    },
     "9fd34464a4a2c914c39918fe366b9702e1f5c4626b10d1e8a7c78d93b6a126c0": {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x61f45cf003e842491aa4a09102d5349e258d1ab4788df2765d4f7e4d6f39ba3a",
+      "txHash": "0xab05283bc49a1be7ed30b1b2e4e104d8927deaf67a0b9addb73f38c3c5c777ca",
       "layout": {
         "storage": [
           {
@@ -452,18 +570,18 @@
           {
             "contract": "InvoiceNFT",
             "label": "controller",
-            "type": "t_contract(IInvoiceController)6116",
-            "src": "contracts/InvoiceNFT.sol:11"
+            "type": "t_contract(IInvoiceController)5948",
+            "src": "contracts/InvoiceNFT.sol:12"
           },
           {
             "contract": "InvoiceNFT",
             "label": "_tokenIds",
             "type": "t_struct(Counter)2710_storage",
-            "src": "contracts/InvoiceNFT.sol:15"
+            "src": "contracts/InvoiceNFT.sol:16"
           }
         ],
         "types": {
-          "t_contract(IInvoiceController)6116": {
+          "t_contract(IInvoiceController)5948": {
             "label": "contract IInvoiceController"
           },
           "t_struct(Counter)2710_storage": {
@@ -589,9 +707,9 @@
         }
       }
     },
-    "f81063431c3a325db5617cb76b60b95f257f165a195d73c6c8d29b8d873d79a7": {
+    "2247719304082622cec7680e9ecb130d1ac58de3124dedba32a1a8f4f08349cf": {
       "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-      "txHash": "0xa6773b78a046c938a2a562feba66941e368dadcd070a7b1cb67991639e561f64",
+      "txHash": "0x1b05b77d9c9b71cf0f33e7853f81ffd8266768f66f96c4d74900922845d029e6",
       "layout": {
         "storage": [
           {
@@ -627,66 +745,48 @@
           {
             "contract": "InvoiceController",
             "label": "logger",
-            "type": "t_contract(ILogger)6213",
-            "src": "contracts/InvoiceController.sol:14"
+            "type": "t_contract(IInvoiceLogger)6129",
+            "src": "contracts/InvoiceController.sol:16"
           },
           {
             "contract": "InvoiceController",
             "label": "ibToken",
-            "type": "t_contract(IInvoiceBuildToken)6034",
-            "src": "contracts/InvoiceController.sol:15"
+            "type": "t_contract(IInvoiceBuildToken)5870",
+            "src": "contracts/InvoiceController.sol:17"
           },
           {
             "contract": "InvoiceController",
             "label": "invoiceNFT",
-            "type": "t_contract(IInvoiceNFT)6133",
-            "src": "contracts/InvoiceController.sol:16"
+            "type": "t_contract(IInvoiceNFT)6146",
+            "src": "contracts/InvoiceController.sol:18"
           },
           {
             "contract": "InvoiceController",
             "label": "feeBp",
             "type": "t_uint256",
-            "src": "contracts/InvoiceController.sol:18"
+            "src": "contracts/InvoiceController.sol:20"
           },
           {
             "contract": "InvoiceController",
             "label": "invoices",
             "type": "t_mapping(t_uint256,t_address_payable)",
-            "src": "contracts/InvoiceController.sol:20"
-          },
-          {
-            "contract": "InvoiceController",
-            "label": "invoicesForOwner",
-            "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)",
-            "src": "contracts/InvoiceController.sol:21"
-          },
-          {
-            "contract": "InvoiceController",
-            "label": "invoiceCountForOwner",
-            "type": "t_mapping(t_address,t_uint256)",
             "src": "contracts/InvoiceController.sol:22"
-          },
-          {
-            "contract": "InvoiceController",
-            "label": "invoiceNumberForAccount",
-            "type": "t_mapping(t_address,t_uint256)",
-            "src": "contracts/InvoiceController.sol:23"
           },
           {
             "contract": "InvoiceController",
             "label": "feesPaidWithIBT",
             "type": "t_mapping(t_uint256,t_bool)",
-            "src": "contracts/InvoiceController.sol:24"
+            "src": "contracts/InvoiceController.sol:23"
           }
         ],
         "types": {
-          "t_contract(ILogger)6213": {
-            "label": "contract ILogger"
+          "t_contract(IInvoiceLogger)6129": {
+            "label": "contract IInvoiceLogger"
           },
-          "t_contract(IInvoiceBuildToken)6034": {
+          "t_contract(IInvoiceBuildToken)5870": {
             "label": "contract IInvoiceBuildToken"
           },
-          "t_contract(IInvoiceNFT)6133": {
+          "t_contract(IInvoiceNFT)6146": {
             "label": "contract IInvoiceNFT"
           },
           "t_uint256": {
@@ -698,147 +798,20 @@
           "t_address_payable": {
             "label": "address payable"
           },
-          "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
-            "label": "mapping(address => uint256[])"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_array(t_uint256)dyn_storage": {
-            "label": "uint256[]"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)"
-          },
           "t_mapping(t_uint256,t_bool)": {
             "label": "mapping(uint256 => bool)"
           },
           "t_bool": {
             "label": "bool"
           },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          }
-        }
-      }
-    },
-    "096b25ad8abfea40466fbb93e5d5c82ca849876d33a7a80082c71e5e1f1744f9": {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0x490d730a5aeddfefc662d10b55ee0f5da969f36895d8a5e55ced34ee4ac55ffd",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol:25"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol:30"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_balances",
-            "type": "t_mapping(t_address,t_uint256)",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:37"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_allowances",
-            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:39"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_totalSupply",
-            "type": "t_uint256",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:41"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_name",
-            "type": "t_string_storage",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:43"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_symbol",
-            "type": "t_string_storage",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:44"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "_decimals",
-            "type": "t_uint8",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:45"
-          },
-          {
-            "contract": "ERC20Upgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)44_storage",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol:312"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "_owner",
-            "type": "t_address",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
-          },
-          {
-            "contract": "InvoiceBuildToken",
-            "label": "controller",
-            "type": "t_address",
-            "src": "contracts/InvoiceBuildToken.sol:8"
-          }
-        ],
-        "types": {
           "t_address": {
             "label": "address"
           },
           "t_array(t_uint256)49_storage": {
             "label": "uint256[49]"
           },
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)"
-          },
-          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
-            "label": "mapping(address => mapping(address => uint256))"
-          },
-          "t_string_storage": {
-            "label": "string"
-          },
-          "t_uint8": {
-            "label": "uint8"
-          },
-          "t_array(t_uint256)44_storage": {
-            "label": "uint256[44]"
-          },
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
-          },
-          "t_bool": {
-            "label": "bool"
           }
         }
       }

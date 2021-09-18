@@ -2,10 +2,7 @@
 pragma solidity ^0.7.0;
 
 interface IInvoiceController {
-  function invoices(uint256 id) external view returns (address);
-  function invoicesForOwner(address owner) external view returns (uint256[] memory);
-  function invoiceCountForOwner(address owner) external view returns (uint256);
-  function invoiceNumberForAccount(address account) external view returns (uint256);
+  function invoices(uint256 id) external view returns (address payable);
   function feesPaidWithIBT(uint256 id) external view returns (bool);
 
   function create(
@@ -15,6 +12,17 @@ interface IInvoiceController {
     uint256 overdueInterest,
     string memory metaUrl
   ) external payable returns (uint256, address);
+
+  event InvoiceCreated(
+    uint256 indexed id,
+    address         invoiceAddress,
+    uint256         amount,
+    address indexed recipient,
+    uint256         dueAt,
+    uint256         overdueInterest,
+    string          metaUrl,
+    address indexed creator
+  );
 
   function pay(uint256 id) external payable;
 

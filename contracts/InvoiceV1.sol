@@ -4,78 +4,76 @@ pragma solidity ^0.7.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/math/Math.sol";
+import "./interfaces/IInvoiceV1.sol";
+import "./interfaces/IInvoiceLogger.sol";
 
-contract InvoiceV1 is Ownable {
+contract InvoiceV1 is IInvoiceV1, Ownable {
   using SafeMath for uint256;
 
-  string public version = "1";
+  string public override version = "1";
 
-  address public controller;
-  uint256 public tokenId; // ERC721 Token id
-  uint256 public number; // The owner's invoice number reference / index
-  uint256 public amount; // The total amount to be paid
-  uint256 internal _outstanding; // The outstanding balance to be paid off (not incl. fees)
-  address payable public recipient; // Who can withdraw any funds deposited
-  address public acceptedBy; // The client
-  uint256 public dueAt;
-  uint256 public overdueInterest; // e.g. 8.5%
-  uint256 public lateFees; // Final balance of late fees paid
-  bool public isPaid;
+  IInvoiceLogger internal logger;
+
+  address public override         controller;
+  uint256 public override         tokenId; // ERC721 Token id
+  uint256 public override         amount; // The total amount to be paid
+  uint256 internal                _outstanding; // The outstanding balance to be paid off (not incl. fees)
+  address payable public override recipient; // Who can withdraw any funds deposited
+  address public override         acceptedBy; // The client
+  uint256 public override         dueAt;
+  uint256 public override         overdueInterest; // e.g. 8.5%
+  uint256 public override         lateFees; // Final balance of late fees paid
+  bool    public override         isPaid;
 
   constructor(
     uint256 _tokenId,
-    uint256 _number,
     uint256 _amount,
     address payable _recipient,
     uint256 _dueAt,
     uint256 _overdueInterest,
-    address _controller
+    address _controller,
+    address _logger
   ) {
     require(_amount > 0, "Amount too low");
 
-    (tokenId, number, amount, recipient, dueAt, overdueInterest, controller) = (
-      _tokenId, _number, _amount, _recipient, _dueAt, _overdueInterest, _controller
+    (tokenId, amount, recipient, dueAt, overdueInterest, controller) = (
+      _tokenId, _amount, _recipient, _dueAt, _overdueInterest, _controller
     );
 
     _outstanding = _amount;
     lateFees = 0;
     isPaid = false;
     acceptedBy = address(0);
+    logger = IInvoiceLogger(_logger);
   }
 
-  event Payment(address from, uint256 amount);
-  event Finalized();
-  event Accepted(address by);
-  event OwnershipChanged(address to);
-
-  modifier onlyRecipientOrOwner () {
-    require(msg.sender == recipient || msg.sender == owner());
+  modifier onlyRecipient () {
+    require(msg.sender == recipient, "Must be recipient");
     _;
   }
 
   modifier onlyController () {
-    require(msg.sender == controller);
+    require(msg.sender == controller, "Must be controller");
     _;
   }
 
-  function ctrlTransferOwnership(address to) external onlyController {
+  function ctrlTransferOwnership(address to) external override onlyController {
+    address from = owner();
     transferOwnership(to);
-    emit OwnershipChanged(to);
+    logger.logInvoiceOwnershipChanged(tokenId, from, to);
   }
 
-  function ctrlSetRecipient(address payable _recipient) external onlyController {
+  function ctrlSetRecipient(address payable _recipient) external override onlyController {
+    address from = recipient;
     recipient = _recipient;
+    logger.logInvoiceRecipientChanged(tokenId, from, recipient);
   }
 
-  function ctrlSetNumber(uint256 _number) external onlyController {
-    number = _number;
-  }
-
-  function pay() external payable {
+  function pay() external override payable {
     handlePayment(msg.sender, msg.value);
   }
 
-  function ctrlPay(address from) external payable onlyController {
+  function ctrlPay(address from) external override payable onlyController {
     handlePayment(from, msg.value);
   }
 
@@ -83,17 +81,18 @@ contract InvoiceV1 is Ownable {
     handlePayment(msg.sender, msg.value);
   }
 
-  function accept() external {
+  function accept() external override {
     handleAcceptance(msg.sender);
   }
 
-  function ctrlAccept(address account) external onlyController {
+  function ctrlAccept(address account) external override onlyController {
     handleAcceptance(account);
   }
 
-  function withdraw() external onlyRecipientOrOwner returns (bool) {
+  function withdraw() external override onlyRecipient returns (bool) {
     uint256 balance = address(this).balance;
     msg.sender.transfer(balance);
+    logger.logInvoiceWithdrawal(tokenId, address(this), balance, msg.sender);
     return true;
   }
 
@@ -108,42 +107,42 @@ contract InvoiceV1 is Ownable {
     } else {
       _outstanding = _outstanding.sub(_amount);
     }
-    emit Payment(from, msg.value);
+    logger.logInvoicePayment(tokenId, address(this), _amount, from);
   }
 
   function handleAcceptance(address account) private {
     require(acceptedBy == address(0), "Already accepted");
 
     acceptedBy = account;
-    emit Accepted(account);
+    logger.logInvoiceAccepted(tokenId, address(this), account);
   }
 
   function finalize() private {
     _outstanding = 0;
     isPaid = true;
     lateFees = overdueFee(block.timestamp);
-    emit Finalized();
+    logger.logInvoiceFinalized(tokenId, address(this), amount, lateFees);
   }
 
-  function outstanding(uint256 currentTime) public view returns (uint256) {
+  function outstanding(uint256 currentTime) public override view returns (uint256) {
     return _outstanding + overdueFee(currentTime);
   }
 
-  function isOverdue(uint256 currentTime) public view returns (bool) {
+  function isOverdue(uint256 currentTime) public override view returns (bool) {
     if (dueAt == 0) return false;
 
     return currentTime > dueAt;
   }
 
   // Floored hours overdue
-  function hoursOverdue(uint256 currentTime) public view returns (uint256) {
+  function hoursOverdue(uint256 currentTime) public override view returns (uint256) {
     if (!isOverdue(currentTime)) return 0;
     uint256 secs = currentTime.sub(dueAt);
 
     return secs.div(3600).add(1); // Add 1 hour so late fees applied in first hour after dueAt
   }
 
-  function overdueFee(uint256 currentTime) public view returns (uint256) {
+  function overdueFee(uint256 currentTime) public override view returns (uint256) {
     if (dueAt == 0) return 0;
     uint256 hoursInYear = 8760e18;
     uint256 interest = overdueInterest;
@@ -152,7 +151,7 @@ contract InvoiceV1 is Ownable {
     return hoursOverdue(currentTime).mul(feePerHour);
   }
 
-  function isAccepted() public view returns (bool) {
+  function isAccepted() public override view returns (bool) {
     return acceptedBy != address(0);
   }
 }

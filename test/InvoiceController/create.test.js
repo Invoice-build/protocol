@@ -25,8 +25,9 @@ describe('InvoiceController #create', function () {
 
   it('Creates an invoice', async function () {
     await createInvoice(signer1, params, fee)
-    expect(await contracts.invoiceController.invoiceCountForOwner(signer1.address)).to.equal(1)
-    expect(await contracts.invoiceController.invoiceCountForOwner(signer2.address)).to.equal(0)
+    const invoice = await contracts.invoiceController.invoices(1);
+    expect(typeof invoice).to.be.a('string')
+    expect(invoice).to.not.equal(ethers.constants.AddressZero)
   })
 
   it('Fails if amount 0', async function () {
@@ -51,12 +52,6 @@ describe('InvoiceController #create', function () {
     }
   })
 
-  it('Increments account invoice number', async function () {
-    await createInvoice(signer1, params, fee)
-    expect(await contracts.invoiceController.invoiceNumberForAccount(signer1.address)).to.equal(1)
-    expect(await contracts.invoiceController.invoiceNumberForAccount(signer2.address)).to.equal(0)
-  })
-
   it('Mints an ERC721 token', async function () {
     await createInvoice(signer1, params, fee)
 
@@ -71,7 +66,6 @@ describe('InvoiceController #create', function () {
     const invoice = new ethers.Contract(invoiceAddress, InvoiceV1.abi)
 
     expect(await invoice.connect(signer2).tokenId()).to.equal(1)
-    expect(await invoice.connect(signer2).number()).to.equal(1)
 
     let invoiceAmount = await invoice.connect(signer2).amount()
     invoiceAmount = parseFloat(ethers.utils.formatUnits(invoiceAmount, 'ether'))
@@ -84,18 +78,6 @@ describe('InvoiceController #create', function () {
     const invoice = new ethers.Contract(invoiceAddress, InvoiceV1.abi)
 
     expect(await invoice.connect(signer2).owner()).to.equal(signer1.address)
-  })
-
-  it('Associates sender with token ID', async function () {
-    await createInvoice(signer1, params, fee)
-    await createInvoice(signer2, params, fee)
-    await createInvoice(signer1, params, fee)
-
-    const signer1Ids = (await contracts.invoiceController.getInvoiceIds(signer1.address)).map(id => id.toNumber())
-    const signer2Ids = (await contracts.invoiceController.getInvoiceIds(signer2.address)).map(id => id.toNumber())
-
-    expect(signer1Ids).to.eql([1,3])
-    expect(signer2Ids).to.eql([2])
   })
 
   it('Logs InvoiceCreated', async function () {

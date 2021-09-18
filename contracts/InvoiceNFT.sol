@@ -6,8 +6,9 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/math/SafeMathUpgradeable.sol";
 import "./interfaces/IInvoiceController.sol";
+import "./interfaces/IInvoiceNFT.sol";
 
-contract InvoiceNFT is ERC721Upgradeable, OwnableUpgradeable {
+contract InvoiceNFT is IInvoiceNFT, ERC721Upgradeable, OwnableUpgradeable {
   IInvoiceController internal controller;
   using SafeMathUpgradeable for uint256;
 
@@ -24,11 +25,11 @@ contract InvoiceNFT is ERC721Upgradeable, OwnableUpgradeable {
     _;
   }
 
-  function setController(address _controller) external onlyOwner {
+  function setController(address _controller) external override onlyOwner {
     controller = IInvoiceController(_controller);
   }
 
-  function ctrlMint(address owner, string memory metaUrl) external onlyController returns (uint256) {
+  function ctrlMint(address owner, string memory metaUrl) external override onlyController returns (uint256) {
     _tokenIds.increment();
     uint256 newTokenId = _tokenIds.current();
 

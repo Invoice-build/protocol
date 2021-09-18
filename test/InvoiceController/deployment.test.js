@@ -13,10 +13,6 @@ describe('InvoiceController', function () {
     expect(await contracts.invoiceController.owner()).to.equal(owner.address)
   })
 
-  it('Gets logger address previously set', async function () {
-    expect(await contracts.invoiceController.loggerAddress()).to.equal(contracts.logger.address)
-  })
-
   it('Gets IBT address previously set', async function () {
     expect(await contracts.invoiceController.erc20Address()).to.equal(contracts.invoiceBuildToken.address)
   })

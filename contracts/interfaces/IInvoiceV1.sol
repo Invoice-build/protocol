@@ -6,24 +6,21 @@ interface IInvoiceV1 {
   function controller() external view returns (address);
   function tokenId() external view returns (uint256);
   function amount() external view returns (uint256);
-  function recipient() external view returns (address);
+  function recipient() external view returns (address payable);
   function acceptedBy() external view returns (address);
   function dueAt() external view returns (uint256);
   function overdueInterest() external view returns (uint256);
   function lateFees() external view returns (uint256);
   function isPaid() external view returns (bool);
 
-  function ctrlTransferOwnership() external;
+  function ctrlTransferOwnership(address to) external;
+  function ctrlSetRecipient(address payable _recipient) external;
 
   function pay() external payable;
-
   function ctrlPay(address from) external payable;
 
   function accept() external;
-
   function ctrlAccept(address account) external;
-
-  function finalize() external;
 
   function withdraw() external returns (bool);
 
